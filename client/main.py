@@ -37,7 +37,7 @@ def client(cid, url, data):
         end = time.time()
         if 1.0-float(end-start) > 0.0:
             time.sleep(1.0-float(end-start))
-        if i >= 100:
+        if i >= 60:
             break
 
 

@@ -65,27 +65,42 @@ Implement encryption so the messages sent by the clients can only be decrypted b
 -- Use file system to store keys
 
 
-## Installation
+# Installation
 
-# Node installation
+## Node installation
 -- Navigate to node folder
+
 -- create a virtual env 
+
 -- Install all requirements in that env using pip install -r requirements.txt
+
 -- Activate the environment
+
 -- Run the command to start fastapi server. "uvicorn src.main:app"
+
 -- I have choosen fastapi server, because it has advantages such as concurrent execution using asyncio implementation, in-built swagger documentation for all API's created.
 
-# Note
+Note
+
 -- API to store client keys and add data to queue will be used by client
+
 -- API to get the block and check the count of blocks can be checked from swagger.
+
 -- By default fastapi runs on uvicorn server and its default port is 8000
+
 -- URL for swagger: http://127.0.0.1:8000/docs
 
-# Client installation
+## Client installation
 -- Navigate to client folder
+
 -- create a virtual env 
+
 -- Install all requirements in that env using pip install -r requirements.txt
+
 -- Activate the environment
+
 -- Run python main.py to start cretion and execution of client
+
 -- This program will spawn mutiple processes where each process represents an individual client.
+
 -- Each client will will send the sample of data for every one second for 60 seconds

@@ -9,7 +9,7 @@ import queue
 import hashlib
 
 app = FastAPI()
-q = queue.Queue(maxsize=2)
+q = queue.Queue(maxsize=100)
 blocks = []
 
 
@@ -51,19 +51,16 @@ def get_hash(msg):
 
 def create_block(q, bl):
     msgs = []
-    print('started obtaining messages')
     while not q.empty():
         msg = q.get()
         msgs.append(msg)
-    print('obtained messages')
     msgs_block = dict(messages=msgs)
     block_hash = get_hash(json.dumps(msgs_block))
     msg_bytes = json.dumps(msgs_block).encode()
     sign_hash = private_key.sign(msg_bytes, encoding='hex')
     block = {'signed_hash': sign_hash.decode(),
-             'hash': block_hash, 'messages': msgs_block}
+             'hash': block_hash, 'messages': msgs_block['messages']}
     blocks.append(block)
-    print(blocks)
 
 
 @app.post("/clientdata")
@@ -78,13 +75,11 @@ async def read_client_data(data: schema.ClientData):
         vk = ed25519.VerifyingKey(pub_key, encoding='hex')
         vk.verify(signature.encode(), data.data.encode(), encoding='hex')
         if validateJson(json.loads(data.data)):
-            q.put(data.data)
+            q.put(json.loads(data.data))
             qw = q
             if q.full():
                 #TODO create a fastapi background task here
-                print('block creation started')
                 create_block(q, blocks)
-                print('block creation completed')
             return JSONResponse(status_code=200, content={"msg": "Data validated"})
     except Exception as e:
         return JSONResponse(status_code=500, content={"msg": "signature or schema validaton failed"})
@@ -98,7 +93,6 @@ async def get_blocks_count():
 
 @app.get("/blocks/{id}")
 async def get_blocks_count(id: int):
-    print(blocks)
     try:
         return JSONResponse(status_code=200, content={"block": blocks[id]})
     except Exception as e:

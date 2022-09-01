@@ -37,7 +37,7 @@ def client(cid, url, data):
         end = time.time()
         if 1.0-float(end-start) > 0.0:
             time.sleep(1.0-float(end-start))
-        if i >= 6:
+        if i >= 60:
             break
 
 
@@ -63,7 +63,7 @@ def main():
     url = 'http://127.0.0.1:8000'
     sample_data = {"person_id": "123",
                    "name": "sample name"}
-    create_clients(sample_data, 'PYCLI', 20, url)
+    create_clients(sample_data, 'PYCLI', 100, url)
 
 
 # sample_data = {"person_id": "123",

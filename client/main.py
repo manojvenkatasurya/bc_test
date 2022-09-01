@@ -33,19 +33,24 @@ def client(cid, url, data):
             print('data rejected by server' + str(pay_load))
         else:
             print('data accepted by server')
-        i += 20
+        i += 1
         end = time.time()
-        time.sleep(1.0-float(end-start))
-        if i >= 60:
+        if 1.0-float(end-start) > 0.0:
+            time.sleep(1.0-float(end-start))
+        if i >= 100:
             break
 
 
 def create_clients(data, cid, count, url):
+    processes = []
     for i in range(count):
-        clid = str(i) + str(id)
+        clid = str(i) + str(cid)
         p = Process(target=client, args=(clid, url, data))
         p.daemon = True
         p.start()
+        processes.append(p)
+    for p in processes:
+        p.join()
 
 
 def sign(data, private_key):
@@ -58,9 +63,11 @@ def main():
     url = 'http://127.0.0.1:8000'
     sample_data = {"person_id": "123",
                    "name": "sample name"}
-    create_clients(sample_data, 'PYCLI', 10)
+    create_clients(sample_data, 'PYCLI', 100, url)
 
 
-sample_data = {"person_id": "123",
-               "name": "sample name"}
-client('cidtest', 'http://127.0.0.1:8000', sample_data)
+# sample_data = {"person_id": "123",
+#                "name": "sample name"}
+# client('cidtest', 'http://127.0.0.1:8000', sample_data)
+if __name__ == '__main__':
+    main()
